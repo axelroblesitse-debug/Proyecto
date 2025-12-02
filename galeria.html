@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería y Contactos - LA COMARCA GUNA-YALA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        
+        .hero-waves {
+            background: linear-gradient(135deg, #0f4c3a 0%, #1a5f4a 50%, #2d7a5a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-item {
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-overlay {
+            background: linear-gradient(45deg, rgba(13, 83, 49, 0.9), rgba(45, 122, 90, 0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .contact-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-delay-1 { transition-delay: 0.1s; }
+        .stagger-delay-2 { transition-delay: 0.2s; }
+        .stagger-delay-3 { transition-delay: 0.3s; }
+        .stagger-delay-4 { transition-delay: 0.4s; }
+        .stagger-delay-5 { transition-delay: 0.5s; }
+        .stagger-delay-6 { transition-delay: 0.6s; }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #a3ffcb, #7dd3fc);
+            transition: left 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            left: 0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 2%;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #bbb;
+        }
+    </style>
+</head>
+<body class="font-body bg-gradient-to-br from-slate-50 to-emerald-50">
+    
+    <!-- Hero Section -->
+    <section class="hero-waves h-96 flex items-center justify-center relative">
+        <div id="vanta-bg" class="absolute inset-0 z-0"></div>
+        <div class="relative z-10 text-center">
+            <h1 class="font-display text-5xl md:text-6xl font-black text-white mb-4 reveal">
+                Galería de <span class="text-emerald-300">Imágenes</span>
+            </h1>
+            <p class="text-xl text-white/90 reveal stagger-delay-1">Descubre la belleza de Guna-Yala a través de nuestras fotos exclusivas</p>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-center items-center py-4">
+                <div class="flex space-x-8">
+                    <a href="index.html" class="nav-link text-gray-700 font-medium py-2 px-4 hover:text-emerald-700">Inicio</a>
+                    <a href="index.html#info" class="nav-link text-gray-700 font-medium py-2 px-4 hover:text-emerald-700">Información</a>
+                    <a href="index.html#cultura" class="nav-link text-gray-700 font-medium py-2 px-4 hover:text-emerald-700">Cultura</a>
+                    <a href="galeria.html" class="nav-link text-emerald-700 font-semibold py-2 px-4 hover:text-emerald-900">Galería</a>
+                    <a href="videos.html" class="nav-link text-gray-700 font-medium py-2 px-4 hover:text-emerald-700">Videos</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Gallery Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-emerald-800 mb-4">Nuestra Galería</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Una colección exclusiva de imágenes que capturan la esencia de Guna-Yala</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item reveal stagger-delay-1 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/apassionandapassport.com/fc74564f23d58412722ee32d88ee6959f0b427d4.jpg" 
+                         alt="Playas de San Blas" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Playas de San Blas</h3>
+                            <p class="text-sm opacity-90">Arena blanca y aguas cristalinas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item reveal stagger-delay-2 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/sallysees.com/9f450b9875a3a0a95911409ebb18eb2577091af2.jpg" 
+                         alt="Aguas turquesa" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Aguas Turquesa</h3>
+                            <p class="text-sm opacity-90">El mar más cristalino del Caribe</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item reveal stagger-delay-3 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/ebth-com-production.imgix.net/8ce15bc4eda2eea375a0840f32df5cad9992ff4b.JPG" 
+                         alt="Arte Mola" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Arte Mola</h3>
+                            <p class="text-sm opacity-90">Textiles tradicionales Guna</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item reveal stagger-delay-4 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/dynamic-media-cdn.tripadvisor.com/13fcadeb4da7fb8136eab23c510667a8e3ab22e8.jpg" 
+                         alt="Vista aérea islas" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Archipiélago</h3>
+                            <p class="text-sm opacity-90">Vista aérea de las islas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item reveal stagger-delay-5 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/upload.wikimedia.org/387a69a28aa38bf45db47026b6f11afe175364e6.jpg" 
+                         alt="Comunidad Guna" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Comunidad Guna</h3>
+                            <p class="text-sm opacity-90">Pueblo indígena ancestral</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item reveal stagger-delay-6 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/lapossibilitadiunisola.files.wordpress.com/2d0bc6ea9301d996ec2f7b38d6ca7680daa3e15.jpg" 
+                         alt="Botes tradicionales" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Ulu Tradicionales</h3>
+                            <p class="text-sm opacity-90">Botes artesanales Guna</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 7 -->
+                <div class="gallery-item reveal stagger-delay-1 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.liveandinvestoverseas.com/4604502d1fe135a9876efc7ef37c24be94eec86e.jpeg" 
+                         alt="Playa tropical" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Paraíso Tropical</h3>
+                            <p class="text-sm opacity-90">Playas vírgenes</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 8 -->
+                <div class="gallery-item reveal stagger-delay-2 relative overflow-hidden rounded-2xl shadow-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/sanblas-islands.com/815d41b662ac9313855a841055305f20ac8f79b3.jpg" 
+                         alt="Mola colorida" 
+                         class="w-full h-64 object-cover">
+                    <div class="gallery-overlay absolute inset-0 flex items-center justify-center">
+                        <div class="text-center text-white p-4">
+                            <h3 class="text-xl font-bold mb-2">Mola Colorida</h3>
+                            <p class="text-sm opacity-90">Arte textil ancestral</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-emerald-800 mb-4">Contactos</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Conéctate con nosotros para más información sobre Guna-Yala</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Contact Card 1 -->
+                <div class="contact-card reveal stagger-delay-1 p-8 rounded-3xl">
+                    <div class="text-emerald-600 text-4xl mb-6">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-emerald-800 mb-4">Email</h3>
+                    <p class="text-gray-600 mb-4">Para consultas generales e información</p>
+                    <a href="mailto:info@guna-yala.com" class="text-emerald-600 font-semibold hover:text-emerald-800 transition-colors">
+                        info@guna-yala.com
+                    </a>
+                </div>
+                
+                <!-- Contact Card 2 -->
+                <div class="contact-card reveal stagger-delay-2 p-8 rounded-3xl">
+                    <div class="text-blue-600 text-4xl mb-6">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-blue-800 mb-4">Teléfono</h3>
+                    <p class="text-gray-600 mb-4">Atención personalizada de lunes a viernes</p>
+                    <a href="tel:+50712345678" class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">
+                        +507 1234-5678
+                    </a>
+                </div>
+                
+                <!-- Contact Card 3 -->
+                <div class="contact-card reveal stagger-delay-3 p-8 rounded-3xl">
+                    <div class="text-teal-600 text-4xl mb-6">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-teal-800 mb-4">Ubicación</h3>
+                    <p class="text-gray-600 mb-4">Costa caribeña de Panamá</p>
+                    <span class="text-teal-600 font-semibold">
+                        Comarca Guna-Yala, Panamá
+                    </span>
+                </div>
+                
+                <!-- Contact Card 4 -->
+                <div class="contact-card reveal stagger-delay-4 p-8 rounded-3xl">
+                    <div class="text-purple-600 text-4xl mb-6">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-purple-800 mb-4">Horario</h3>
+                    <p class="text-gray-600 mb-4">Mejores horarios para visitar</p>
+                    <span class="text-purple-600 font-semibold">
+                        8:00 AM - 6:00 PM
+                    </span>
+                </div>
+                
+                <!-- Contact Card 5 -->
+                <div class="contact-card reveal stagger-delay-5 p-8 rounded-3xl">
+                    <div class="text-orange-600 text-4xl mb-6">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-orange-800 mb-4">Tours</h3>
+                    <p class="text-gray-600 mb-4">Reservas para grupos y individuales</p>
+                    <a href="mailto:tours@guna-yala.com" class="text-orange-600 font-semibold hover:text-orange-800 transition-colors">
+                        tours@guna-yala.com
+                    </a>
+                </div>
+                
+                <!-- Contact Card 6 -->
+                <div class="contact-card reveal stagger-delay-6 p-8 rounded-3xl">
+                    <div class="text-red-600 text-4xl mb-6">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold text-red-800 mb-4">Soporte</h3>
+                    <p class="text-gray-600 mb-4">Ayuda y soporte para visitantes</p>
+                    <a href="mailto:support@guna-yala.com" class="text-red-600 font-semibold hover:text-red-800 transition-colors">
+                        support@guna-yala.com
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-gradient-to-r from-emerald-600 to-teal-600">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-6">¿Listo para Visitar?</h2>
+                <p class="text-xl text-white/90 mb-8">Planifica tu viaje a Guna-Yala y vive una experiencia inolvidable</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html" class="bg-white text-emerald-700 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-home mr-2"></i>Volver al Inicio
+                    </a>
+                    <a href="videos.html" class="bg-white/20 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-video mr-2"></i>Ver Videos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption" style="color: white; text-align: center; padding: 10px;"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="mb-6">
+                <h3 class="font-display text-2xl font-bold text-emerald-400 mb-2">LA COMARCA GUNA-YALA</h3>
+                <p class="text-gray-400">Preservando la cultura, protegiendo la naturaleza</p>
+            </div>
+            <div class="border-t border-gray-800 pt-6">
+                <p class="text-gray-500">&copy; 2024 La Comarca Guna-Yala. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Vanta.js waves background
+        VANTA.WAVES({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x0f4c3a,
+            shininess: 30.00,
+            waveHeight: 15.00,
+            waveSpeed: 0.75,
+            zoom: 0.65
+        });
+
+        // Gallery modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const captionText = document.getElementById('caption');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                modal.style.display = 'block';
+                modalImg.src = this.querySelector('img').src;
+                captionText.innerHTML = this.querySelector('h3').textContent + ' - ' + this.querySelector('p').textContent;
+            });
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Reveal animation on scroll
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("visible");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", reveal);
+        reveal(); // Initial check
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
